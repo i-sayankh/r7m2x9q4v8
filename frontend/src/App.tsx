@@ -65,7 +65,7 @@ export default function App() {
     <main className="mx-auto max-w-[1440px] px-5 pb-12 pt-8 sm:px-8">
       <section className="mb-6 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
         <div><p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#25816e]">Wind generation · Great Britain</p><h1 className="mt-2 text-3xl font-semibold tracking-[-0.035em] sm:text-[38px]">Day-ahead forecast review</h1><p className="mt-2 max-w-2xl text-sm text-muted-foreground">How closely did yesterday’s published wind forecast track Elexon’s reported generation?</p></div>
-        <DateSelector value={date} onChange={setDate} />
+        <DateSelector value={date} onChange={(nextDate) => { setAnalysis(null); setDate(nextDate) }} />
       </section>
 
       {error && <div role="alert" className="mb-5 flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800"><AlertTriangle size={16} />{error}</div>}
