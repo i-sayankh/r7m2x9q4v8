@@ -34,6 +34,7 @@ def _daily(dataset, delivery_date: date, cutoff: time) -> tuple[list[SeriesPoint
         list(selection.selected.values()),
         actual_conflicts=day_conflicts,
         forecast_conflicts=selection.conflicts,
+        delivery_date=delivery_date,
     )
     notes: list[str] = []
     if selection.conflicts:

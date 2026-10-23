@@ -69,6 +69,7 @@ def align_periods(
     actuals: list[ActualRecord], forecasts: list[ForecastRecord],
     actual_conflicts: set[datetime] | None = None,
     forecast_conflicts: set[datetime] | None = None,
+    delivery_date: date | None = None,
 ) -> list[SeriesPoint]:
     actual_selection = select_final_actuals(actuals)
     actual_map = actual_selection.selected
@@ -76,21 +77,28 @@ def align_periods(
     actual_conflicts = actual_conflicts | actual_selection.conflicts
     forecast_conflicts = forecast_conflicts or set()
     forecast_map = {row.start_time.astimezone(UTC): row for row in forecasts}
-    hourly_forecast = any(
+    hourly_forecast = delivery_date is not None or any(
         following - current >= timedelta(minutes=55)
         for current, following in zip(sorted(forecast_map), sorted(forecast_map)[1:])
     )
 
     mapped_actuals: dict[datetime, float] = {}
     actual_quality: dict[datetime, str] = {}
-    consumed: set[datetime] = set()
     if hourly_forecast:
-        for hour in forecast_map:
+        actual_hours = {stamp.replace(minute=0, second=0, microsecond=0) for stamp in actual_map}
+        conflict_hours = {stamp.replace(minute=0, second=0, microsecond=0) for stamp in actual_conflicts}
+        expected_hours: set[datetime] = set()
+        if delivery_date is not None:
+            hour = datetime.combine(delivery_date, time.min, LONDON).astimezone(UTC)
+            next_day = datetime.combine(delivery_date + timedelta(days=1), time.min, LONDON).astimezone(UTC)
+            while hour < next_day:
+                expected_hours.add(hour)
+                hour += timedelta(hours=1)
+        for hour in forecast_map.keys() | actual_hours | conflict_hours | expected_hours:
             slots = [hour, hour + timedelta(minutes=30)]
             present = [slot for slot in slots if slot in actual_map and slot not in actual_conflicts]
             if len(present) == 2:
                 mapped_actuals[hour] = sum(actual_map[slot].generation_mw for slot in present) / 2
-                consumed.update(present)
             elif any(slot in actual_conflicts for slot in slots):
                 actual_quality[hour] = "conflicting actual"
             elif present:
@@ -102,6 +110,7 @@ def align_periods(
 
     times = set(forecast_map) | set(mapped_actuals)
     times |= forecast_conflicts
+    times |= set(actual_quality)
     if not hourly_forecast:
         times |= actual_conflicts
     points: list[SeriesPoint] = []

@@ -32,6 +32,10 @@ class DataStore:
 
     def _snapshot(self, detail: str | None = None) -> Dataset:
         raw = json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))
+        for dataset_name in ("actuals", "forecasts"):
+            dataset_rows = raw.get(dataset_name)
+            if isinstance(dataset_rows, dict):
+                raw[dataset_name] = dataset_rows.get("value", [])
         snapshot = JanuarySnapshot.model_validate(raw)
         return Dataset(snapshot.actuals, snapshot.forecasts, "snapshot", detail, datetime.now(timezone.utc))
 
