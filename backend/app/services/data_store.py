@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 from dataclasses import dataclass
 from datetime import date, datetime, time, timezone
 from pathlib import Path
@@ -12,7 +13,10 @@ JANUARY_START = date(2026, 1, 1)
 JANUARY_END = date(2026, 1, 31)
 FORECAST_PUBLISH_FROM = datetime(2025, 12, 30, tzinfo=timezone.utc)
 FORECAST_PUBLISH_TO = datetime(2026, 1, 30, 9, 20, tzinfo=timezone.utc)
-SNAPSHOT_PATH = Path(__file__).resolve().parents[2] / "data" / "january_2026_snapshot.json"
+SNAPSHOT_PATH = Path(os.getenv(
+    "SNAPSHOT_PATH",
+    str(Path(__file__).resolve().parents[2] / "data" / "january_2026_snapshot.json"),
+))
 
 
 @dataclass
