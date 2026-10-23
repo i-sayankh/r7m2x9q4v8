@@ -1,0 +1,27 @@
+# Local planning and agent scratch (never part of the assignment repo)
+/docs/superpowers/specs/
+/docs/superpowers/plans/
+/.superpowers/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Local environment and editor files
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
