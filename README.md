@@ -4,7 +4,7 @@ A compact review dashboard for comparing Elexon's day-ahead national wind foreca
 
 ## Status
 
-- Hosted application: **Not deployed yet** (deployment is being handled by the project author).
+- Hosted application: [Open the deployed app](https://r7m2x9q4v8.vercel.app/).
 - Walkthrough video: **Not published yet**.
 - Analysis window: **1–31 January 2026**.
 
