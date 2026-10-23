@@ -27,4 +27,5 @@
   }
   * { @apply border-border; }
   body { @apply bg-background text-foreground antialiased; }
+  button, select { -webkit-tap-highlight-color: transparent; }
 }
